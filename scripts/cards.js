@@ -1,3 +1,5 @@
+//cards.js
+
 const initialCards = [
     {
       name: "Архыз",
