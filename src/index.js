@@ -17,12 +17,13 @@ import { initialCards } from './components/cards.js';
 const cardTemplate = document.querySelector("#card-template").content;
 const cardList = document.querySelector(".places__list");
 
-function createCard(cardData, cardDelete) {
+function createCard(cardData, cardDelete, handleLike) {
   const cardElements = cardTemplate.querySelector(".card").cloneNode(true);
 
   const cardImage = cardElements.querySelector(".card__image");
   const cardTitle = cardElements.querySelector(".card__title");
   const deleteButton = cardElements.querySelector(".card__delete-button");
+  const likeButton = cardElements.querySelector(".card__like-button");
 
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
@@ -31,6 +32,13 @@ function createCard(cardData, cardDelete) {
   deleteButton.addEventListener("click", function () {
     cardDelete(cardElements);
   });
+
+
+  likeButton.addEventListener("click", () => {
+    handleLike(likeButton);
+  });
+
+
 
   // Открытие картинки в попапе
   cardImage.addEventListener("click", () => {
@@ -49,8 +57,12 @@ function cardDelete(cardElements) {
   cardElements.remove();
 }
 
+function handleLike(likeButton) {
+  likeButton.classList.toggle('card__like-button_is-active');
+}
+
 initialCards.forEach(function (cardData) {
-  const card = createCard(cardData, cardDelete);
+  const card = createCard(cardData, cardDelete, handleLike);
   cardList.appendChild(card);
 });
 
