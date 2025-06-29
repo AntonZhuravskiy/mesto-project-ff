@@ -17,28 +17,34 @@ import {
   handleOverlayClick,
 } from "./components/modal.js";
 
+// Попапы
 const editPopup = document.querySelector(".popup_type_edit");
 const addPopup = document.querySelector(".popup_type_new-card");
 const imagePopup = document.querySelector(".popup_type_image");
 const popupImage = imagePopup.querySelector(".popup__image");
 const popupCaption = imagePopup.querySelector(".popup__caption");
 
+// Кнопки
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
 const closeButtons = document.querySelectorAll(".popup__close");
 
+// Контейнер для карточек
 const cardList = document.querySelector(".places__list");
 
-const formElement = document.forms["edit-profile"];
-const nameInput = formElement.elements["name"];
-const jobInput = formElement.elements["description"];
+// Форма профиля
+const profileForm = document.forms["edit-profile"];
+const profileNameInput = profileForm.elements["name"];
+const profileJobInput = profileForm.elements["description"];
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
-const newCardForm = document.forms["new-place"];
-const placeNameInput = newCardForm.elements["place-name"];
-const placeLinkInput = newCardForm.elements["link"];
+// Форма карточки
+const cardForm = document.forms["new-place"];
+const cardNameInput = cardForm.elements["place-name"];
+const cardLinkInput = cardForm.elements["link"];
 
+// Открытие попапа изображения
 function openImagePopup(cardData) {
   popupImage.src = cardData.link;
   popupImage.alt = cardData.name;
@@ -46,20 +52,26 @@ function openImagePopup(cardData) {
   openModal(imagePopup);
 }
 
-initialCards.forEach((cardData) => {
-  const card = createCard(cardData, cardDelete, handleLike, openImagePopup);
-  cardList.appendChild(card);
-});
+// Рендер карточки универсальным способом
+const callbacks = { cardDelete, handleLike, openImagePopup };
 
+function renderCard(cardData, method = "prepend") {
+  const cardElement = createCard({ cardData, ...callbacks });
+  cardList[method](cardElement);
+}
+
+// Вывод начальных карточек
+initialCards.forEach((cardData) => renderCard(cardData, "append"));
+
+// Обработчики
 editButton.addEventListener("click", () => {
-  nameInput.value = profileTitle.textContent;
-  jobInput.value = profileDescription.textContent;
+  profileNameInput.value = profileTitle.textContent;
+  profileJobInput.value = profileDescription.textContent;
   openModal(editPopup);
 });
 
 addButton.addEventListener("click", () => {
-  newCardForm.reset();
-  openModal(addPopup);
+  openModal(addPopup); // просто открываем, не сбрасывая форму
 });
 
 closeButtons.forEach((btn) => {
@@ -71,21 +83,20 @@ document
   .querySelectorAll(".popup")
   .forEach((popup) => popup.addEventListener("mousedown", handleOverlayClick));
 
-formElement.addEventListener("submit", (evt) => {
+profileForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
+  profileTitle.textContent = profileNameInput.value;
+  profileDescription.textContent = profileJobInput.value;
   closeModal(editPopup);
 });
 
-newCardForm.addEventListener("submit", (evt) => {
+cardForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  const newCard = {
-    name: placeNameInput.value,
-    link: placeLinkInput.value,
+  const cardData = {
+    name: cardNameInput.value,
+    link: cardLinkInput.value,
   };
-  const card = createCard(newCard, cardDelete, handleLike, openImagePopup);
-  cardList.prepend(card);
+  renderCard(cardData); // вставка в начало
   closeModal(addPopup);
-  newCardForm.reset();
+  cardForm.reset();
 });
