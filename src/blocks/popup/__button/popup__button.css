@@ -10,13 +10,25 @@
   background: #000;
   border-radius: 2px;
   border: none;
-  transition: visibility 0s, background 0.3s;
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
   margin-top: 48px;
+  cursor: pointer;
 }
 
-.popup__button:hover {
+/* При наведении */
+.popup__button:hover:not(:disabled):not(.popup__button_disabled) {
   background: rgba(0, 0, 0, 0.8);
-  cursor: pointer;
+}
+
+/* Неактивная кнопка */
+.popup__button:disabled,
+.popup__button_disabled {
+  background-color: white;
+  color: rgba(0, 0, 0, 0.2);            /* ← 20% чёрного текста */
+  border: 1px solid rgba(0, 0, 0, 0.2); /* ← 20% чёрная рамка */
+  cursor: default;
+  pointer-events: none;
+  opacity: 1;
 }
 
 @media screen and (max-width: 568px) {
