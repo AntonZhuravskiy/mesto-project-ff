@@ -1,16 +1,19 @@
+const POPUP_OPENED_CLASS = "popup_is-opened";
+const ESCAPE_KEY = "Escape";
+
 export function openModal(popup) {
-  popup.classList.add("popup_is-opened");
+  popup.classList.add(POPUP_OPENED_CLASS);
   document.addEventListener("keydown", handleEscClose);
 }
 
 export function closeModal(popup) {
-  popup.classList.remove("popup_is-opened");
+  popup.classList.remove(POPUP_OPENED_CLASS);
   document.removeEventListener("keydown", handleEscClose);
 }
 
 function handleEscClose(evt) {
-  if (evt.key === "Escape") {
-    const openedPopup = document.querySelector(".popup_is-opened");
+  if (evt.key === ESCAPE_KEY) {
+    const openedPopup = document.querySelector(`.${POPUP_OPENED_CLASS}`);
     if (openedPopup) closeModal(openedPopup);
   }
 }

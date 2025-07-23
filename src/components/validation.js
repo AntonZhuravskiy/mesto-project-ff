@@ -1,3 +1,7 @@
+const TEXT_INPUT_PATTERN = /^[А-Яа-яЁёA-Za-z\s\-]+$/;
+const DEFAULT_ERROR_MESSAGE = "Недопустимый формат";
+const TEXT_INPUT_NAMES = ["name", "place-name"];
+
 function showError(form, input, errorMessage, config) {
   const errorElement = form.querySelector(`.${input.name}-error`);
   input.classList.add(config.inputErrorClass);
@@ -13,13 +17,12 @@ function hideError(form, input, config) {
 }
 
 function checkInputValidity(form, input, config) {
-  const pattern = /^[А-Яа-яЁёA-Za-z\s\-]+$/;
-  const isTextInput = input.name === "name" || input.name === "place-name";
+  const isTextInput = TEXT_INPUT_NAMES.includes(input.name);
 
   if (!input.validity.valid) {
     showError(form, input, input.validationMessage, config);
-  } else if (isTextInput && !pattern.test(input.value)) {
-    const message = input.dataset.errorMessage || "Недопустимый формат";
+  } else if (isTextInput && !TEXT_INPUT_PATTERN.test(input.value)) {
+    const message = input.dataset.errorMessage || DEFAULT_ERROR_MESSAGE;
     showError(form, input, message, config);
   } else {
     hideError(form, input, config);
@@ -28,9 +31,8 @@ function checkInputValidity(form, input, config) {
 
 function hasInvalidInput(inputs, config) {
   return inputs.some((input) => {
-    const isTextInput = input.name === "name" || input.name === "place-name";
-    const pattern = /^[А-Яа-яЁёA-Za-z\s\-]+$/;
-    return !input.validity.valid || (isTextInput && !pattern.test(input.value));
+    const isTextInput = TEXT_INPUT_NAMES.includes(input.name);
+    return !input.validity.valid || (isTextInput && !TEXT_INPUT_PATTERN.test(input.value));
   });
 }
 
