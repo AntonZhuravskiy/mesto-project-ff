@@ -1,5 +1,3 @@
-
-
 import "./pages/index.css";
 import { createCard, deleteCard, handleLike } from "./components/card.js";
 import {
@@ -21,6 +19,10 @@ import {
 const SAVING_BUTTON_TEXT = "Сохранение...";
 
 let userId;
+
+function renderLoading(isLoading, buttonElement, loadingText = SAVING_BUTTON_TEXT, defaultText = "Сохранить") {
+  buttonElement.textContent = isLoading ? loadingText : defaultText;
+}
 
 function setUserInfo(userData) {
   profileTitle.textContent = userData.name;
@@ -139,6 +141,9 @@ document
 profileForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
+  const submitButton = profileForm.querySelector(".popup__button");
+  renderLoading(true, submitButton);
+
   const name = profileNameInput.value;
   const about = profileJobInput.value;
 
@@ -149,11 +154,17 @@ profileForm.addEventListener("submit", (evt) => {
     })
     .catch((err) => {
       console.error("Ошибка обновления профиля:", err);
+    })
+    .finally(() => {
+      renderLoading(false, submitButton);
     });
 });
 
 cardForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
+
+  const submitButton = cardForm.querySelector(".popup__button");
+  renderLoading(true, submitButton);
 
   const cardData = {
     name: cardNameInput.value,
@@ -169,6 +180,9 @@ cardForm.addEventListener("submit", (evt) => {
     })
     .catch((err) => {
       console.error("Ошибка добавления карточки:", err);
+    })
+    .finally(() => {
+      renderLoading(false, submitButton);
     });
 });
 
@@ -176,8 +190,7 @@ avatarForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
   const submitButton = avatarForm.querySelector(".popup__button");
-  const originalButtonText = submitButton.textContent;
-  submitButton.textContent = SAVING_BUTTON_TEXT;
+  renderLoading(true, submitButton);
 
   const avatarData = {
     avatar: avatarUrlInput.value,
@@ -194,6 +207,6 @@ avatarForm.addEventListener("submit", (evt) => {
       console.error("Ошибка обновления аватара:", err);
     })
     .finally(() => {
-      submitButton.textContent = originalButtonText;
+      renderLoading(false, submitButton);
     });
 });
